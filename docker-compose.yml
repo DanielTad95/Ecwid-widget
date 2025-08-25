@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_ECWID_STORE_ID=101560752
+      - VITE_ECWID_PUBLIC_TOKEN=public_ie55a1cQU472c1GBmeBqAVpL1ks3LFpu
+      - VITE_API_BASE_URL=http://localhost:3001
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - ecwid-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "3001:3001"
+    environment:
+      - ECWID_STORE_ID=101560752
+      - ECWID_PUBLIC_TOKEN=public_ie55a1cQU472c1GBmeBqAVpL1ks3LFpu
+      - PORT=3001
+      - NODE_ENV=development
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    networks:
+      - ecwid-network
+
+  widget-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.widget
+    ports:
+      - "3002:3002"
+    environment:
+      - PORT=3002
+      - API_BASE_URL=http://backend:3001
+    volumes:
+      - ./widget:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - ecwid-network
+
+networks:
+  ecwid-network:
+    driver: bridge
+
+volumes:
+  frontend_node_modules:
+  backend_node_modules:
+  widget_node_modules:

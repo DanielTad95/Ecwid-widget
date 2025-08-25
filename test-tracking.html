@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест Order Tracking</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            background: #f8f9fa;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Тест системы Order Tracking</h1>
+    
+    <div class="test-section">
+        <h3>📊 Тест localStorage tracking</h3>
+        <button onclick="testAddProduct()">Добавить продукт в tracking</button>
+        <button onclick="showTracking()">Показать tracking данные</button>
+        <button onclick="clearTracking()">Очистить tracking</button>
+        <div id="trackingResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>🌐 Тест Analytics API</h3>
+        <button onclick="testAnalyticsGet()">Получить аналитику</button>
+        <button onclick="testAnalyticsPost()">Отправить add-to-cart</button>
+        <div id="analyticsResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>🛒 Симуляция widget tracking</h3>
+        <button onclick="simulateWidgetAddToCart(456, 'Test Widget Product')">Симулировать добавление в корзину</button>
+        <div id="widgetResult" class="result"></div>
+    </div>
+
+    <script>
+        // Глобальный массив для отслеживания (как в виджете)
+        let widgetAddedProducts = JSON.parse(localStorage.getItem('widgetAddedProducts') || '[]');
+        
+        function testAddProduct() {
+            const trackingItem = {
+                productId: Math.floor(Math.random() * 1000),
+                action: 'add_to_cart',
+                timestamp: new Date().toISOString(),
+                widget: 'recently-updated-products'
+            };
+            
+            widgetAddedProducts.push(trackingItem);
+            localStorage.setItem('widgetAddedProducts', JSON.stringify(widgetAddedProducts));
+            
+            document.getElementById('trackingResult').textContent = `Добавлен продукт: ${JSON.stringify(trackingItem, null, 2)}`;
+        }
+        
+        function showTracking() {
+            const tracking = JSON.parse(localStorage.getItem('widgetAddedProducts') || '[]');
+            document.getElementById('trackingResult').textContent = `Всего товаров в tracking: ${tracking.length}\n\n${JSON.stringify(tracking, null, 2)}`;
+        }
+        
+        function clearTracking() {
+            localStorage.removeItem('widgetAddedProducts');
+            widgetAddedProducts = [];
+            document.getElementById('trackingResult').textContent = 'Tracking данные очищены';
+        }
+        
+        async function testAnalyticsGet() {
+            try {
+                const response = await fetch('http://localhost:3001/api/analytics/widget-analytics');
+                const data = await response.json();
+                document.getElementById('analyticsResult').textContent = `Аналитика:\n${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                document.getElementById('analyticsResult').textContent = `Ошибка: ${error.message}`;
+            }
+        }
+        
+        async function testAnalyticsPost() {
+            try {
+                const response = await fetch('http://localhost:3001/api/analytics/widget-analytics/add-to-cart', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        productId: 789,
+                        productName: 'Test API Product',
+                        productSku: 'API-TEST-SKU'
+                    })
+                });
+                const data = await response.json();
+                document.getElementById('analyticsResult').textContent = `Отправлено:\n${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                document.getElementById('analyticsResult').textContent = `Ошибка: ${error.message}`;
+            }
+        }
+        
+        async function simulateWidgetAddToCart(productId, productName) {
+            // Симулируем точно такой же процесс, как в виджете
+            const trackingItem = {
+                productId: productId,
+                action: 'add_to_cart',
+                timestamp: new Date().toISOString(),
+                widget: 'recently-updated-products'
+            };
+            
+            // Добавляем в localStorage
+            widgetAddedProducts.push(trackingItem);
+            localStorage.setItem('widgetAddedProducts', JSON.stringify(widgetAddedProducts));
+            
+            // Отправляем в analytics
+            try {
+                const response = await fetch('http://localhost:3001/api/analytics/widget-analytics/add-to-cart', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        productId: productId,
+                        productName: productName,
+                        productSku: '',
+                        timestamp: new Date().toISOString(),
+                        widget: 'recently-updated-products'
+                    })
+                });
+                const data = await response.json();
+                document.getElementById('widgetResult').textContent = `Успешно симулировано добавление в корзину:\nLocalStorage: ${JSON.stringify(trackingItem, null, 2)}\nAPI Response: ${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                document.getElementById('widgetResult').textContent = `Ошибка API: ${error.message}`;
+            }
+        }
+        
+        // Показываем текущие данные при загрузке
+        window.onload = function() {
+            showTracking();
+        };
+    </script>
+</body>
+</html>

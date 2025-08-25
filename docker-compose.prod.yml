@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend.prod
+    ports:
+      - "80:80"
+    environment:
+      - VITE_ECWID_STORE_ID=101560752
+      - VITE_ECWID_PUBLIC_TOKEN=public_ie55a1cQU472c1GBmeBqAVpL1ks3LFpu
+      - VITE_API_BASE_URL=http://localhost:3001
+    depends_on:
+      - backend
+    networks:
+      - ecwid-network
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend.prod
+    ports:
+      - "3001:3001"
+    environment:
+      - ECWID_STORE_ID=101560752
+      - ECWID_PUBLIC_TOKEN=public_ie55a1cQU472c1GBmeBqAVpL1ks3LFpu
+      - PORT=3001
+      - NODE_ENV=production
+    volumes:
+      - ./data:/app/data
+    networks:
+      - ecwid-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  widget-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.widget.prod
+    ports:
+      - "3002:80"
+    networks:
+      - ecwid-network
+    restart: unless-stopped
+
+networks:
+  ecwid-network:
+    driver: bridge
+
+volumes:
+  data:

@@ -1,0 +1,15 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install serve globally for serving static files
+RUN yarn global add serve
+
+# Copy widget files
+COPY widget/ ./
+
+# Expose port
+EXPOSE 3002
+
+# Serve widget files
+CMD ["serve", "-s", ".", "-l", "3002"]
