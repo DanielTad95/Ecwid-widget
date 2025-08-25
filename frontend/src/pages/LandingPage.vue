@@ -114,16 +114,26 @@ const scrollToStore = () => {
 }
 
 const loadCustomWidget = () => {
-  // Load custom widget script according to Ecwid documentation
-  // Step 2: Connect a self-hosted JS file with the app
+  // Load new modular widget (v2.0)
   const script = document.createElement('script')
-  script.src = 'http://localhost:3002/recently-updated.js'
+  script.src = 'http://localhost:3002/widget.js'
   script.async = true
   script.onload = () => {
-    console.log('Recently Updated Widget script loaded successfully')
+    console.log('Recently Updated Widget v2.0 (modular) loaded successfully')
   }
   script.onerror = () => {
-    console.error('Failed to load Recently Updated Widget script')
+    console.error('Failed to load Recently Updated Widget v2.0, trying legacy fallback...')
+    // Fallback to legacy version
+    const fallbackScript = document.createElement('script')
+    fallbackScript.src = 'http://localhost:3002/recently-updated-legacy.js'
+    fallbackScript.async = true
+    fallbackScript.onload = () => {
+      console.log('Legacy widget loaded as fallback')
+    }
+    fallbackScript.onerror = () => {
+      console.error('Failed to load both modular and legacy widgets')
+    }
+    document.head.appendChild(fallbackScript)
   }
   document.head.appendChild(script)
 }

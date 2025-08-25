@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecwid Widget Files v2.0</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        
+        .file-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .file-list li {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid #4a90e2;
+        }
+        
+        .file-link {
+            text-decoration: none;
+            color: #4a90e2;
+            font-weight: 500;
+        }
+        
+        .file-link:hover {
+            text-decoration: underline;
+        }
+        
+        .file-description {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background: #10b981;
+            color: white;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ecwid Widget Files v2.0</h1>
+        <div class="status">Widget Server Active - Modular Architecture</div>
+        
+        <p>This server hosts the JavaScript and CSS files for the Ecwid Recently Updated Products widget with improved modular architecture.</p>
+        
+        <h2>Available Files:</h2>
+        <ul class="file-list">
+            <li>
+                <a href="/widget.js" class="file-link">widget.js</a>
+                <div class="file-description">
+                    Main widget loader (NEW v2.0) - Loads all modules automatically
+                </div>
+            </li>
+            <li>
+                <a href="/recently-updated-legacy.js" class="file-link">recently-updated-legacy.js</a>
+                <div class="file-description">
+                    Legacy monolithic widget file (fallback)
+                </div>
+            </li>
+                    Main widget JavaScript file that integrates with Ecwid stores
+                </div>
+            </li>
+            <li>
+                <a href="/styles.css" class="file-link">styles.css</a>
+                <div class="file-description">
+                    CSS styles for the widget that match Ecwid's design standards
+                </div>
+            </li>
+        </ul>
+
+        <h2>Widget Modules (v2.0):</h2>
+        <ul class="file-list">
+            <li>
+                <a href="/config.js" class="file-link">config.js</a>
+                <div class="file-description">Configuration and constants</div>
+            </li>
+            <li>
+                <a href="/logger.js" class="file-link">logger.js</a>
+                <div class="file-description">Environment-aware logging system</div>
+            </li>
+            <li>
+                <a href="/api.js" class="file-link">api.js</a>
+                <div class="file-description">API communication module</div>
+            </li>
+            <li>
+                <a href="/dom.js" class="file-link">dom.js</a>
+                <div class="file-description">DOM manipulation and caching</div>
+            </li>
+            <li>
+                <a href="/ui.js" class="file-link">ui.js</a>
+                <div class="file-description">HTML generation and sanitization</div>
+            </li>
+            <li>
+                <a href="/tracking.js" class="file-link">tracking.js</a>
+                <div class="file-description">Analytics and order tracking</div>
+            </li>
+            <li>
+                <a href="/core.js" class="file-link">core.js</a>
+                <div class="file-description">Main coordination logic</div>
+            </li>
+        </ul>
+        
+        <h2>Integration Instructions:</h2>
+        <div style="background: #f0f9ff; padding: 1rem; border-radius: 4px; border-left: 4px solid #0ea5e9;">
+            <p><strong>For v2.0 Modular Widget:</strong></p>
+            <ol>
+                <li>Host these files on a public HTTPS server</li>
+                <li>Include the main widget loader:</li>
+                <code style="background: #e5e7eb; padding: 0.5rem; border-radius: 4px; display: block; margin: 0.5rem 0;">
+                    &lt;script src="http://localhost:3002/widget.js"&gt;&lt;/script&gt;
+                </code>
+                <li>Widget will automatically load all modules and initialize</li>
+            </ol>
+            
+            <p><strong>For Legacy Fallback:</strong></p>
+            <code style="background: #e5e7eb; padding: 0.5rem; border-radius: 4px; display: block; margin-top: 0.5rem;">
+                &lt;script src="http://localhost:3002/recently-updated-legacy.js"&gt;&lt;/script&gt;
+            </code>
+        </div>
+        
+        <h2>Widget Features:</h2>
+        <ul>
+            <li>✅ Modular architecture (v2.0)</li>
+            <li>✅ Environment-aware logging</li>
+            <li>✅ DOM caching for performance</li>
+            <li>✅ XSS protection</li>
+            <li>✅ Displays recently updated products on cart page</li>
+            <li>✅ Add to cart functionality</li>
+            <li>✅ Product navigation</li>
+            <li>✅ Configurable product count</li>
+            <li>✅ Order tracking via custom fields</li>
+            <li>✅ Responsive design</li>
+        </ul>
+    </div>
+</body>
+</html>

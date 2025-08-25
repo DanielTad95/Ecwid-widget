@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Widget Test Page</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            background: #f5f5f5;
+        }
+        .test-container { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 8px; 
+            max-width: 1200px; 
+            margin: 0 auto;
+        }
+        .ec-cart { 
+            min-height: 200px; 
+            border: 2px dashed #ccc; 
+            padding: 20px; 
+            margin: 20px 0; 
+            text-align: center;
+            background: #fafafa;
+        }
+        .ec-footer { 
+            background: #333; 
+            color: white; 
+            padding: 20px; 
+            margin-top: 40px; 
+            text-align: center;
+        }
+        .debug-panel {
+            background: #e7f3ff;
+            border: 1px solid #b3d4fc;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .debug-panel h3 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+        button {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0052a3;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Widget Test Page</h1>
+        
+        <div class="debug-panel">
+            <h3>Debug Controls</h3>
+            <button onclick="checkModules()">Check Modules</button>
+            <button onclick="checkEcwid()">Check Ecwid API</button>
+            <button onclick="insertTestWidget()">Test Widget Insertion</button>
+            <button onclick="clearConsole()">Clear Console</button>
+            <button onclick="window.location.reload()">Reload Page</button>
+        </div>
+
+        <!-- Simulate Ecwid cart page structure -->
+        <div class="ec-cart notranslate">
+            <h2>🛒 Simulated Ecwid Cart</h2>
+            <p>This div simulates the Ecwid cart container (.ec-cart.notranslate)</p>
+            <p>The widget should appear below this area.</p>
+        </div>
+
+        <!-- Widget will be inserted here -->
+
+        <div class="ec-footer">
+            <p>🦶 Simulated Ecwid Footer (.ec-footer)</p>
+        </div>
+
+        <div class="debug-panel">
+            <h3>Console Output</h3>
+            <div id="console-output" style="background: #000; color: #0f0; padding: 10px; font-family: monospace; min-height: 200px; overflow-y: auto;">
+                Console output will appear here...
+            </div>
+        </div>
+    </div>
+
+    <!-- Mock Ecwid API for testing -->
+    <script>
+        // Mock Ecwid API for testing
+        window.Ecwid = {
+            OnAPILoaded: {
+                add: function(callback) {
+                    console.log('[Mock] Ecwid.OnAPILoaded.add called');
+                    setTimeout(callback, 100); // Simulate async loading
+                }
+            },
+            OnPageLoaded: {
+                add: function(callback) {
+                    console.log('[Mock] Ecwid.OnPageLoaded.add called');
+                    // Simulate cart page load
+                    setTimeout(() => {
+                        callback({ type: 'CART' });
+                    }, 500);
+                }
+            },
+            Cart: {
+                get: function(callback) {
+                    console.log('[Mock] Ecwid.Cart.get called');
+                    callback({ items: [] }); // Empty cart
+                },
+                addProduct: function(product) {
+                    console.log('[Mock] Ecwid.Cart.addProduct called with:', product);
+                    if (product.callback) {
+                        product.callback(true, product, { items: [product] });
+                    }
+                }
+            },
+            openPage: function(type, params) {
+                console.log('[Mock] Ecwid.openPage called:', type, params);
+            }
+        };
+
+        // Capture console logs and display them
+        const originalConsole = {
+            log: console.log,
+            warn: console.warn,
+            error: console.error,
+            info: console.info
+        };
+
+        function addToOutput(type, message) {
+            const output = document.getElementById('console-output');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = {
+                log: '#0f0',
+                warn: '#ff0',
+                error: '#f00',
+                info: '#0ff'
+            }[type] || '#0f0';
+            
+            output.innerHTML += `<div style="color: ${color}">[${timestamp}] ${message}</div>`;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        console.log = function(...args) {
+            addToOutput('log', args.join(' '));
+            originalConsole.log.apply(console, args);
+        };
+
+        console.warn = function(...args) {
+            addToOutput('warn', args.join(' '));
+            originalConsole.warn.apply(console, args);
+        };
+
+        console.error = function(...args) {
+            addToOutput('error', args.join(' '));
+            originalConsole.error.apply(console, args);
+        };
+
+        console.info = function(...args) {
+            addToOutput('info', args.join(' '));
+            originalConsole.info.apply(console, args);
+        };
+
+        // Debug functions
+        function checkModules() {
+            console.log('=== MODULE CHECK ===');
+            const modules = ['WidgetConfig', 'WidgetLogger', 'WidgetAPI', 'WidgetDOM', 'WidgetUI', 'WidgetTracking', 'WidgetCore'];
+            modules.forEach(module => {
+                console.log(`${module}: ${window[module] ? '✅ Available' : '❌ Missing'}`);
+            });
+        }
+
+        function checkEcwid() {
+            console.log('=== ECWID API CHECK ===');
+            console.log(`Ecwid: ${window.Ecwid ? '✅ Available' : '❌ Missing'}`);
+            console.log(`Ecwid.OnAPILoaded: ${window.Ecwid?.OnAPILoaded ? '✅ Available' : '❌ Missing'}`);
+            console.log(`Ecwid.Cart: ${window.Ecwid?.Cart ? '✅ Available' : '❌ Missing'}`);
+        }
+
+        function insertTestWidget() {
+            console.log('=== MANUAL WIDGET INSERTION TEST ===');
+            if (window.WidgetCore && window.WidgetCore.insertWidgetWithRetry) {
+                window.WidgetCore.insertWidgetWithRetry();
+            } else {
+                console.error('WidgetCore.insertWidgetWithRetry not available');
+            }
+        }
+
+        function clearConsole() {
+            document.getElementById('console-output').innerHTML = '';
+        }
+
+        console.log('🧪 Test page loaded - Mock Ecwid API ready');
+    </script>
+
+    <!-- Load the modular widget -->
+    <script src="http://localhost:3002/widget.js"></script>
+</body>
+</html>
