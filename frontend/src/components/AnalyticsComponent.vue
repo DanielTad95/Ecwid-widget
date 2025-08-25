@@ -78,12 +78,10 @@
 
 <script>
 import { ref, onMounted } from 'vue'
-import { useSettingsStore } from '../stores/settingsStore'
 
 export default {
   name: 'AnalyticsComponent',
   setup() {
-    const settingsStore = useSettingsStore()
     const loading = ref(false)
     const analytics = ref({
       totalViews: 0,

@@ -1,7 +1,5 @@
 import * as XLSX from 'xlsx'
 import { EcwidProduct } from './ecwidService'
-import fs from 'fs'
-import path from 'path'
 
 export class ExportService {
   async exportToCSV(products: EcwidProduct[]): Promise<Buffer> {

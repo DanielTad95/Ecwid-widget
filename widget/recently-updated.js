@@ -968,28 +968,6 @@
     console.log('🧹 All widget instances removed');
   }
 
-  /**
-   * Utility function to clean HTML and truncate text
-   */
-  function truncateText(text, maxLength) {
-    if (!text) return '';
-    
-    // Remove HTML tags and decode HTML entities
-    const cleanText = text
-      .replace(/<[^>]*>/g, '') // Remove HTML tags
-      .replace(/&nbsp;/g, ' ') // Replace &nbsp; with space
-      .replace(/&amp;/g, '&')  // Replace &amp; with &
-      .replace(/&lt;/g, '<')   // Replace &lt; with <
-      .replace(/&gt;/g, '>')   // Replace &gt; with >
-      .replace(/&quot;/g, '"') // Replace &quot; with "
-      .replace(/&#39;/g, "'")  // Replace &#39; with '
-      .replace(/\s+/g, ' ')    // Replace multiple spaces with single space
-      .trim();                 // Remove leading/trailing whitespace
-    
-    if (cleanText.length <= maxLength) return cleanText;
-    return cleanText.substring(0, maxLength).trim() + '...';
-  }
-
   // Widget is automatically initialized by Ecwid.OnAPILoaded.add() above
   // No manual initialization needed - follows Ecwid documentation pattern
 
